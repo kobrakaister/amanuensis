@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+build/
+*.wav
+*.mp3
+*.m4a
+*.mp4
+*.aac
+*.flac
+*.ogg
