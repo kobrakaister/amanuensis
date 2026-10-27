@@ -9,7 +9,7 @@ Last updated: 2026-10-27
 
 | Stream | Branch or worktree | State | Remaining work |
 |---|---|---|---|
-| Lecture study pipeline | `main`, no commit yet | Task 0 step 7: downloading `qwen2.5:7b` | Ollama 0.40.11 listens on `127.0.0.1:11435`; port 11434 belongs to Ollama 0.24.0. Resume at Task 0 step 7 |
+| Lecture study pipeline | `feat/lecture-study-pipeline` | Implementation in progress | Execute `docs/superpowers/plans/2026-10-27-lecture-study-pipeline.md` from Task 1 |
 
 ## Do not mix
 

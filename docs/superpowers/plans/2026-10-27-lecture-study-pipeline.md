@@ -143,7 +143,7 @@ Expected: la prima riga è vuota; la seconda è `127.0.0.1`. Se compare `0.0.0.0
 Run: `ollama pull qwen2.5:7b`
 Expected: termina con `success`. Poi `ollama list` mostra `qwen2.5:7b`.
 
-- [ ] **Step 8: Commit iniziale e branch di lavoro**
+- [x] **Step 8: Commit iniziale e branch di lavoro**
 
 ```powershell
 git add -A
@@ -151,7 +151,7 @@ git commit -m "chore: initialise repository with kit and lecture pipeline design
 git switch -c feat/lecture-study-pipeline
 ```
 
-- [ ] **Step 9: Aggiorna `docs/workstreams.md`**
+- [x] **Step 9: Aggiorna `docs/workstreams.md`**
 
 Sostituisci la riga dello stream con:
 
