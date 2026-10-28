@@ -1234,7 +1234,7 @@ git commit -m "feat: persist job state and rebuild it from final files"
   - `sha256_file(path: Path) -> str`
   - `HashIndex(path: Path, hasher=sha256_file)` con `hash_of(recording) -> str` e `save() -> None`
 
-- [ ] **Step 1: Scrivi i test che falliscono**
+- [x] **Step 1: Scrivi i test che falliscono**
 
 `tests/test_scanner.py`:
 
@@ -1290,12 +1290,12 @@ def test_hash_index_reuses_digest_until_file_changes(tmp_path):
     assert len(calls) == 2
 ```
 
-- [ ] **Step 2: Verifica che falliscano**
+- [x] **Step 2: Verifica che falliscano**
 
 Run: `uv run pytest tests/test_scanner.py -q`
 Expected: FAIL con `ModuleNotFoundError: No module named 'lecture_study.scanner'`
 
-- [ ] **Step 3: Scrivi `src/lecture_study/scanner.py`**
+- [x] **Step 3: Scrivi `src/lecture_study/scanner.py`**
 
 ```python
 from __future__ import annotations
@@ -1359,12 +1359,12 @@ class HashIndex:
         write_json_atomic(self.path, self._entries)
 ```
 
-- [ ] **Step 4: Verifica che passino**
+- [x] **Step 4: Verifica che passino**
 
 Run: `uv run pytest tests/test_scanner.py -q`
 Expected: `3 passed`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```powershell
 git add src/lecture_study/scanner.py tests/test_scanner.py
