@@ -928,7 +928,7 @@ git commit -m "feat: add local-only settings and atomic file writes"
 - Consumes: `TransientError`, `RetriesExhausted`.
 - Produces: `call_with_retries(operation: Callable[[], T], *, delays: tuple[int, ...], sleep: Callable[[float], None], on_retry: Callable[[TransientError, int, int], None] | None = None) -> T`. Esegue l'operazione, poi la ripete una volta per ogni attesa in `delays`; `on_retry(errore, numero_ripetizione, attesa)` viene chiamato prima di ogni attesa.
 
-- [ ] **Step 1: Scrivi i test che falliscono**
+- [x] **Step 1: Scrivi i test che falliscono**
 
 `tests/test_retry.py`:
 
@@ -992,12 +992,12 @@ def test_other_errors_are_not_retried():
     assert sleeps == []
 ```
 
-- [ ] **Step 2: Verifica che falliscano**
+- [x] **Step 2: Verifica che falliscano**
 
 Run: `uv run pytest tests/test_retry.py -q`
 Expected: FAIL con `ModuleNotFoundError: No module named 'lecture_study.retry'`
 
-- [ ] **Step 3: Scrivi `src/lecture_study/retry.py`**
+- [x] **Step 3: Scrivi `src/lecture_study/retry.py`**
 
 ```python
 from typing import Callable, TypeVar
@@ -1028,12 +1028,12 @@ def call_with_retries(
         raise RetriesExhausted(str(exc)) from exc
 ```
 
-- [ ] **Step 4: Verifica che passino**
+- [x] **Step 4: Verifica che passino**
 
 Run: `uv run pytest tests/test_retry.py -q`
 Expected: `4 passed`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```powershell
 git add src/lecture_study/retry.py tests/test_retry.py
