@@ -345,7 +345,7 @@ git commit -m "chore: add package skeleton and vetted dependencies"
   - `classify_runtime_error(exc: RuntimeError) -> Exception`
   - `FasterWhisperTranscriber(model_name: str)`
 
-- [ ] **Step 1: Scrivi i test che falliscono**
+- [x] **Step 1: Scrivi i test che falliscono**
 
 `tests/test_transcribe.py`:
 
@@ -416,12 +416,12 @@ def test_read_wav_head_stops_at_available_audio(tmp_path):
     assert samples.size == 32000
 ```
 
-- [ ] **Step 2: Verifica che falliscano**
+- [x] **Step 2: Verifica che falliscano**
 
 Run: `uv run pytest tests/test_transcribe.py -q`
 Expected: FAIL con `ModuleNotFoundError: No module named 'lecture_study.transcribe'`
 
-- [ ] **Step 3: Scrivi `src/lecture_study/transcribe.py`**
+- [x] **Step 3: Scrivi `src/lecture_study/transcribe.py`**
 
 ```python
 from __future__ import annotations
@@ -556,12 +556,12 @@ class FasterWhisperTranscriber:
         return Transcript(language, round(probability, 3), self.model_name, device, collected)
 ```
 
-- [ ] **Step 4: Verifica che passino**
+- [x] **Step 4: Verifica che passino**
 
 Run: `uv run pytest tests/test_transcribe.py -q`
 Expected: `11 passed`
 
-- [ ] **Step 5: Scrivi `scripts/gpu_check.py`**
+- [x] **Step 5: Scrivi `scripts/gpu_check.py`**
 
 ```python
 import sys
@@ -596,19 +596,21 @@ if __name__ == "__main__":
     raise SystemExit(main())
 ```
 
-- [ ] **Step 6: Prova la GPU di questo PC**
+- [x] **Step 6: Prova la GPU di questo PC**
 
 Run: `uv run python scripts/gpu_check.py`
 Expected: la prima esecuzione scarica il modello (circa 3 GB, solo il modello, nessun audio inviato) e termina con `device=cuda language=... seconds=...`.
 
 Se compare un errore su `cudnn`, `cublas`, `CUDA` o un'architettura GPU non supportata (la RTX PRO 2000 è Blackwell), **STOP**. Riporta l'errore e chiedi all'utente se procedere con la sola CPU, con il modello `turbo` o con un'altra strada. Non continuare con i task successivi finché la scelta non è presa.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```powershell
 git add src/lecture_study/transcribe.py tests/test_transcribe.py scripts/gpu_check.py
 git commit -m "feat: add faster-whisper transcription module and GPU check"
 ```
+
+La prova GPU del 2026-10-28 ha stampato `device=cuda language=it seconds=8.7`. PyAV 19 non accetta `metadata_errors`, quindi la trascrizione riceve l'audio già letto in memoria.
 
 ---
 
