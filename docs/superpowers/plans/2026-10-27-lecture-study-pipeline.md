@@ -2202,7 +2202,7 @@ git commit -m "feat: compose notes, mind map and review questions"
 - Consumes: `JobState`, `Status`, `format_timestamp`.
 - Produces: `render_report(state: JobState, source: dict) -> str`. Legge da `source` le chiavi `path`, `sha256`, `duration_seconds`, `format`, `analysis{low, voice, ratio, threshold, highpass_hz, apply}`, `preparation{highpass_applied, note}`, `transcription{language, language_probability, model, device}`.
 
-- [ ] **Step 1: Scrivi i test che falliscono**
+- [x] **Step 1: Scrivi i test che falliscono**
 
 `tests/test_report.py`:
 
@@ -2257,12 +2257,12 @@ def test_report_for_new_job():
     assert "- Nessuno" in report
 ```
 
-- [ ] **Step 2: Verifica che falliscano**
+- [x] **Step 2: Verifica che falliscano**
 
 Run: `uv run pytest tests/test_report.py -q`
 Expected: FAIL con `ModuleNotFoundError: No module named 'lecture_study.report'`
 
-- [ ] **Step 3: Scrivi `src/lecture_study/report.py`**
+- [x] **Step 3: Scrivi `src/lecture_study/report.py`**
 
 ```python
 from __future__ import annotations
@@ -2337,12 +2337,12 @@ def render_report(state: JobState, source: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 ```
 
-- [ ] **Step 4: Verifica che passino**
+- [x] **Step 4: Verifica che passino**
 
 Run: `uv run pytest tests/test_report.py -q`
 Expected: `3 passed`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```powershell
 git add src/lecture_study/report.py tests/test_report.py
