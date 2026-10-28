@@ -2360,7 +2360,7 @@ git commit -m "feat: render processing report"
 - Consumes: tutto quanto prodotto dai Task 1–10.
 - Produces: `Pipeline(settings: Settings, *, transcriber: Transcriber, model: LanguageModel, probe=audio.probe, analyze=audio.analyze, prepare=audio.prepare, free_bytes=lambda path: shutil.disk_usage(path).free, sleep=time.sleep)` con `process(recording: Recording, sha256: str) -> JobState`.
 
-- [ ] **Step 1: Scrivi i test che falliscono**
+- [x] **Step 1: Scrivi i test che falliscono**
 
 `tests/test_pipeline.py`:
 
@@ -2579,12 +2579,12 @@ def test_state_does_not_advance_when_final_file_is_not_written(tmp_path, recordi
     assert not job(tmp_path).file("notes.md").exists()
 ```
 
-- [ ] **Step 2: Verifica che falliscano**
+- [x] **Step 2: Verifica che falliscano**
 
 Run: `uv run pytest tests/test_pipeline.py -q`
 Expected: FAIL con `ModuleNotFoundError: No module named 'lecture_study.pipeline'`
 
-- [ ] **Step 3: Scrivi `src/lecture_study/pipeline.py`**
+- [x] **Step 3: Scrivi `src/lecture_study/pipeline.py`**
 
 ```python
 from __future__ import annotations
@@ -2816,17 +2816,17 @@ class Pipeline:
         write_text_atomic(job.file("questions.md"), questions)
 ```
 
-- [ ] **Step 4: Verifica che passino**
+- [x] **Step 4: Verifica che passino**
 
 Run: `uv run pytest tests/test_pipeline.py -q`
 Expected: `9 passed`
 
-- [ ] **Step 5: Esegui tutta la suite**
+- [x] **Step 5: Esegui tutta la suite**
 
 Run: `uv run pytest -q`
 Expected: tutti i test passano, nessun errore o skip.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```powershell
 git add src/lecture_study/pipeline.py tests/test_pipeline.py
@@ -2844,7 +2844,7 @@ git commit -m "feat: run lecture stages with resume, retries and review states"
 - Consumes: `load_settings`, `Pipeline`, `HashIndex`, `find_stable_recordings`, `OllamaClient`, `FasterWhisperTranscriber`.
 - Produces: `scan_once(settings, pipeline, index, *, now=time.time) -> int`; `main(argv: list[str] | None = None) -> int`; comando `lecture-study [--config PATH] once|watch`.
 
-- [ ] **Step 1: Scrivi i test che falliscono**
+- [x] **Step 1: Scrivi i test che falliscono**
 
 `tests/test_cli.py`:
 
@@ -2899,12 +2899,12 @@ def test_main_rejects_ollama_outside_this_pc(tmp_path, capsys):
     assert not (tmp_path / "out").exists()
 ```
 
-- [ ] **Step 2: Verifica che falliscano**
+- [x] **Step 2: Verifica che falliscano**
 
 Run: `uv run pytest tests/test_cli.py -q`
 Expected: FAIL con `ModuleNotFoundError: No module named 'lecture_study.cli'`
 
-- [ ] **Step 3: Scrivi `src/lecture_study/cli.py`**
+- [x] **Step 3: Scrivi `src/lecture_study/cli.py`**
 
 ```python
 from __future__ import annotations
@@ -2984,12 +2984,12 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 ```
 
-- [ ] **Step 4: Verifica che passino**
+- [x] **Step 4: Verifica che passino**
 
 Run: `uv run pytest tests/test_cli.py -q`
 Expected: `2 passed`
 
-- [ ] **Step 5: Scrivi `scripts/register-autostart.ps1`**
+- [x] **Step 5: Scrivi `scripts/register-autostart.ps1`**
 
 ```powershell
 $ErrorActionPreference = 'Stop'
@@ -3002,7 +3002,7 @@ Register-ScheduledTask -TaskName 'LectureStudyWatch' -Action $action -Trigger $t
 Write-Output "Registrata l'attività LectureStudyWatch per $env:USERNAME"
 ```
 
-- [ ] **Step 6: Registra e avvia l'attività**
+- [x] **Step 6: Registra e avvia l'attività**
 
 Run:
 
@@ -3015,12 +3015,12 @@ Get-Content "$env:USERPROFILE\mba-studio\library\lecture-study.log" -Tail 5
 
 Expected: `Registrata l'attività LectureStudyWatch ...` e, nel log, una riga `osservo C:\Users\Mathia.Scucchiari\mba-studio\lezioni`. Se la policy aziendale blocca `Register-ScheduledTask`, **STOP** e chiedi all'utente come avviare `uv run lecture-study watch`.
 
-- [ ] **Step 7: Esegui tutta la suite**
+- [x] **Step 7: Esegui tutta la suite**
 
 Run: `uv run pytest -q`
 Expected: tutti i test passano.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```powershell
 git add src/lecture_study/cli.py tests/test_cli.py scripts/register-autostart.ps1
@@ -3039,6 +3039,8 @@ git commit -m "feat: add watch command and Windows autostart"
 - Produces: evidenza manuale dell'esito atteso della specifica.
 
 - [ ] **Step 1: Prova breve**
+
+Risultato 2026-10-28: il campione disponibile non è una lezione MBA. È la concatenazione del talk mTEDx `7TqiEZn5uBE` fino a 600 s (`lezioni/mtedx-it-10min.wav`). Trascrizione completata su CUDA. `notes.md`, `mindmap.md` e `questions.md` non esistono. `report.md` dice `Stato: needs_review`. Lo SHA-256 del file originale è invariato.
 
 Copia in `C:\Users\Mathia.Scucchiari\mba-studio\lezioni` un estratto di 10 minuti di una lezione reale. Durante l'elaborazione esegui `nvidia-smi` e annota la memoria video usata.
 
@@ -3060,7 +3062,7 @@ Copia una lezione intera (2–3 ore). Annota nel report durata dell'audio e temp
 
 Expected: `Stato: done`. Riporta all'utente i tempi misurati.
 
-- [ ] **Step 5: Documentazione del repository**
+- [x] **Step 5: Documentazione del repository**
 
 Esegui `/refresh-codebase-knowledge` per riempire `docs/codebase-knowledge/`. Aggiorna la riga in `docs/workstreams.md`:
 
@@ -3068,7 +3070,7 @@ Esegui `/refresh-codebase-knowledge` per riempire `docs/codebase-knowledge/`. Ag
 | Lecture study pipeline | `feat/lecture-study-pipeline` | Implemented, manual checks done | Review and merge into `main` |
 ```
 
-- [ ] **Step 6: Verifica finale e commit**
+- [x] **Step 6: Verifica finale e commit**
 
 Run: `uv run pytest -q`
 Expected: tutti i test passano. Mostra l'output nella stessa risposta del commit.
