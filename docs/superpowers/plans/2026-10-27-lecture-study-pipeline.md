@@ -1394,7 +1394,7 @@ git commit -m "feat: find stable recordings and cache their hashes"
   - `Prepared(path: Path, highpass_applied: bool, note: str)`; `prepare_command(...)`; `prepare(source: Path, work_dir: Path, *, ffmpeg: str = "ffmpeg", highpass_hz: int | None, run=subprocess.run) -> Prepared`
   - `required_free_bytes(duration_seconds: float) -> int`
 
-- [ ] **Step 1: Scrivi i test unitari che falliscono**
+- [x] **Step 1: Scrivi i test unitari che falliscono**
 
 `tests/test_audio.py`:
 
@@ -1482,7 +1482,7 @@ def test_required_free_bytes_is_twice_the_wav_size():
     assert required_free_bytes(3600) == 230_400_000
 ```
 
-- [ ] **Step 2: Scrivi il test con ffmpeg reale**
+- [x] **Step 2: Scrivi il test con ffmpeg reale**
 
 `tests/test_audio_ffmpeg.py`:
 
@@ -1553,12 +1553,12 @@ def test_non_audio_file_is_unreadable(tmp_path, tools):
         probe(broken, ffprobe=ffprobe)
 ```
 
-- [ ] **Step 3: Verifica che falliscano**
+- [x] **Step 3: Verifica che falliscano**
 
 Run: `uv run pytest tests/test_audio.py tests/test_audio_ffmpeg.py -q`
 Expected: FAIL con `ModuleNotFoundError: No module named 'lecture_study.audio'`
 
-- [ ] **Step 4: Scrivi `src/lecture_study/audio.py`**
+- [x] **Step 4: Scrivi `src/lecture_study/audio.py`**
 
 ```python
 from __future__ import annotations
@@ -1694,12 +1694,12 @@ def required_free_bytes(duration_seconds: float) -> int:
     return int(2 * WAV_BYTES_PER_SECOND * duration_seconds)
 ```
 
-- [ ] **Step 5: Verifica che passino**
+- [x] **Step 5: Verifica che passino**
 
 Run: `uv run pytest tests/test_audio.py tests/test_audio_ffmpeg.py -q`
 Expected: `11 passed`
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```powershell
 git add src/lecture_study/audio.py tests/test_audio.py tests/test_audio_ffmpeg.py
