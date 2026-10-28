@@ -1055,7 +1055,7 @@ git commit -m "feat: retry transient failures with fixed waits"
   - `JobState(completed: list[str], status: str, stage: str | None, message: str, events: list[str])`
   - `Job(directory: Path)` con `dir`, `work_dir`, `state_path`, `source_path`, `prepared_wav`, `file(name) -> Path`, `read_source() -> dict`, `write_source(dict)`, `has_evidence(stage) -> bool`, `load_state() -> JobState`, `save_state(JobState)`
 
-- [ ] **Step 1: Scrivi i test che falliscono**
+- [x] **Step 1: Scrivi i test che falliscono**
 
 `tests/test_jobs.py`:
 
@@ -1108,12 +1108,12 @@ def test_partial_output_is_not_a_completed_stage(tmp_path):
     assert job.load_state().completed[-1] == "transcribe"
 ```
 
-- [ ] **Step 2: Verifica che falliscano**
+- [x] **Step 2: Verifica che falliscano**
 
 Run: `uv run pytest tests/test_jobs.py -q`
 Expected: FAIL con `ModuleNotFoundError: No module named 'lecture_study.jobs'`
 
-- [ ] **Step 3: Scrivi `src/lecture_study/jobs.py`**
+- [x] **Step 3: Scrivi `src/lecture_study/jobs.py`**
 
 ```python
 from __future__ import annotations
@@ -1207,12 +1207,12 @@ class Job:
         write_json_atomic(self.state_path, asdict(state))
 ```
 
-- [ ] **Step 4: Verifica che passino**
+- [x] **Step 4: Verifica che passino**
 
 Run: `uv run pytest tests/test_jobs.py -q`
 Expected: `6 passed`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```powershell
 git add src/lecture_study/jobs.py tests/test_jobs.py
