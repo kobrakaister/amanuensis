@@ -1719,7 +1719,7 @@ git commit -m "feat: analyse low-frequency noise and prepare 16 kHz audio"
   - `LanguageModel` (Protocol): `complete(system: str, prompt: str) -> str`, `release() -> None`
   - `OllamaClient(base_url: str, model: str, *, num_ctx: int, timeout_seconds: int, urlopen=urllib.request.urlopen)`
 
-- [ ] **Step 1: Scrivi i test che falliscono**
+- [x] **Step 1: Scrivi i test che falliscono**
 
 `tests/test_llm.py`:
 
@@ -1818,12 +1818,12 @@ def test_release_unloads_model_and_ignores_unreachable_server():
     client(down).release()
 ```
 
-- [ ] **Step 2: Verifica che falliscano**
+- [x] **Step 2: Verifica che falliscano**
 
 Run: `uv run pytest tests/test_llm.py -q`
 Expected: FAIL con `ModuleNotFoundError: No module named 'lecture_study.llm'`
 
-- [ ] **Step 3: Scrivi `src/lecture_study/llm.py`**
+- [x] **Step 3: Scrivi `src/lecture_study/llm.py`**
 
 ```python
 from __future__ import annotations
@@ -1894,12 +1894,12 @@ class OllamaClient:
             pass
 ```
 
-- [ ] **Step 4: Verifica che passino**
+- [x] **Step 4: Verifica che passino**
 
 Run: `uv run pytest tests/test_llm.py -q`
 Expected: `6 passed`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```powershell
 git add src/lecture_study/llm.py tests/test_llm.py
@@ -1921,7 +1921,7 @@ git commit -m "feat: add loopback Ollama client"
   - `notes_are_valid`, `mindmap_is_valid`, `questions_are_valid` (`str -> bool`)
   - `StudyComposer(model: LanguageModel, call=lambda operation: operation())` con `notes(segments, language) -> str`, `mindmap(notes, language) -> str`, `questions(notes, language) -> str`
 
-- [ ] **Step 1: Scrivi i test che falliscono**
+- [x] **Step 1: Scrivi i test che falliscono**
 
 `tests/test_study.py`:
 
@@ -2020,12 +2020,12 @@ def test_call_wrapper_is_used_for_every_model_call():
     assert calls == [1]
 ```
 
-- [ ] **Step 2: Verifica che falliscano**
+- [x] **Step 2: Verifica che falliscano**
 
 Run: `uv run pytest tests/test_study.py -q`
 Expected: FAIL con `ModuleNotFoundError: No module named 'lecture_study.study'`
 
-- [ ] **Step 3: Scrivi `src/lecture_study/prompts.py`**
+- [x] **Step 3: Scrivi `src/lecture_study/prompts.py`**
 
 ```python
 PROMPTS = {
@@ -2086,7 +2086,7 @@ PROMPTS = {
 }
 ```
 
-- [ ] **Step 4: Scrivi `src/lecture_study/study.py`**
+- [x] **Step 4: Scrivi `src/lecture_study/study.py`**
 
 ```python
 from __future__ import annotations
@@ -2179,12 +2179,12 @@ class StudyComposer:
         return f"{PROMPTS[language]['questions_title']}\n\n{body}\n"
 ```
 
-- [ ] **Step 5: Verifica che passino**
+- [x] **Step 5: Verifica che passino**
 
 Run: `uv run pytest tests/test_study.py -q`
 Expected: `9 passed`
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```powershell
 git add src/lecture_study/prompts.py src/lecture_study/study.py tests/test_study.py
