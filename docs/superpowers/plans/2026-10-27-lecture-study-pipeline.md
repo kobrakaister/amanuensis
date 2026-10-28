@@ -629,7 +629,7 @@ La prova GPU del 2026-10-28 ha stampato `device=cuda language=it seconds=8.7`. P
   - `windows_drive_type(path: Path) -> int`
   - `write_text_atomic(path: Path, text: str) -> None`, `write_json_atomic(path: Path, data) -> None`, `read_json(path: Path)`
 
-- [ ] **Step 1: Scrivi i test che falliscono**
+- [x] **Step 1: Scrivi i test che falliscono**
 
 `tests/test_atomic.py`:
 
@@ -753,12 +753,12 @@ def test_load_settings_rejects_wrong_type(tmp_path):
         load_settings(config)
 ```
 
-- [ ] **Step 2: Verifica che falliscano**
+- [x] **Step 2: Verifica che falliscano**
 
 Run: `uv run pytest tests/test_atomic.py tests/test_config.py -q`
 Expected: FAIL con `ModuleNotFoundError` per `lecture_study.atomic` e `lecture_study.config`.
 
-- [ ] **Step 3: Scrivi `src/lecture_study/atomic.py`**
+- [x] **Step 3: Scrivi `src/lecture_study/atomic.py`**
 
 ```python
 import json
@@ -785,7 +785,7 @@ def read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 ```
 
-- [ ] **Step 4: Scrivi `src/lecture_study/config.py`**
+- [x] **Step 4: Scrivi `src/lecture_study/config.py`**
 
 ```python
 from __future__ import annotations
@@ -905,12 +905,12 @@ def load_settings(path: Path = DEFAULT_CONFIG) -> Settings:
     return settings
 ```
 
-- [ ] **Step 5: Verifica che passino**
+- [x] **Step 5: Verifica che passino**
 
 Run: `uv run pytest tests/test_atomic.py tests/test_config.py -q`
 Expected: `13 passed`
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```powershell
 git add src/lecture_study/atomic.py src/lecture_study/config.py tests/test_atomic.py tests/test_config.py
