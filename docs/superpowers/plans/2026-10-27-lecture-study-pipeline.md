@@ -17,7 +17,7 @@ Specifica: `docs/superpowers/specs/2026-10-27-lecture-study-pipeline-design.md`.
 - Archivio predefinito: `C:\Users\Mathia.Scucchiari\mba-studio\library` (`Path.home() / "mba-studio" / "library"`).
 - All'avvio vengono rifiutati cartella osservata o archivio dentro OneDrive o su un disco di rete; l'archivio non può stare dentro la cartella osservata.
 - La registrazione non viene mai spostata né modificata. L'identità della lezione è lo SHA-256 del contenuto.
-- Formati accettati: `.wav`, `.mp3`, `.m4a`, `.mp4`, `.aac`, `.flac`, `.ogg`, anche nelle sottocartelle.
+- Formati accettati, anche nelle sottocartelle e senza distinzione di maiuscole: `.wav`, `.aiff`, `.aif`, `.caf`, `.mp3`, `.m4a`, `.mp4`, `.aac`, `.3gp`, `.3gpp`, `.amr`, `.ogg`, `.opus`, `.webm`, `.flac`. ffmpeg decodifica il contenitore; il WAV di lavoro è sempre mono a 16 kHz. Un contenitore accettato ma illeggibile resta `failed`.
 - Un file è stabile quando la sua data di modifica ha almeno 30 secondi. Una lezione alla volta, dalla più vecchia.
 - Passa-alto `highpass=f=80` solo se energia(20–80 Hz) / energia(80–300 Hz) >= 1.0.
 - WAV di lavoro: mono, 16 kHz, PCM 16 bit, in `work\`, rimosso dopo la trascrizione riuscita. Spazio richiesto: `2 * 32000 * durata_in_secondi` byte.
@@ -800,7 +800,14 @@ from urllib.parse import urlparse
 
 DEFAULT_ROOT = Path.home() / "mba-studio"
 DEFAULT_CONFIG = DEFAULT_ROOT / "config.toml"
-AUDIO_EXTENSIONS = frozenset({".wav", ".mp3", ".m4a", ".mp4", ".aac", ".flac", ".ogg"})
+AUDIO_EXTENSIONS = frozenset({
+    ".wav", ".aiff", ".aif", ".caf",
+    ".mp3",
+    ".m4a", ".mp4", ".aac",
+    ".3gp", ".3gpp", ".amr",
+    ".ogg", ".opus", ".webm",
+    ".flac",
+})
 LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1"})
 DRIVE_REMOTE = 4
 
@@ -1379,7 +1386,7 @@ git commit -m "feat: find stable recordings and cache their hashes"
 - Create: `src/lecture_study/audio.py`, `tests/test_audio.py`, `tests/test_audio_ffmpeg.py`
 
 **Interfaces:**
-- Consumes: `UnreadableAudio`.
+- Consumes: `UnreadableAudio`. L'ingresso è un file con una delle estensioni accettate; ffmpeg ne decodifica il contenitore.
 - Produces:
   - `ProbeResult(duration_seconds: float, format_name: str)`; `probe(path: Path, *, ffprobe: str = "ffprobe") -> ProbeResult`
   - `BandEnergy(low: float, voice: float)` con proprietà `ratio`; `band_energy(samples, rate) -> BandEnergy`; `analyze(path: Path, *, ffmpeg: str = "ffmpeg", block_seconds: int = 10) -> BandEnergy`

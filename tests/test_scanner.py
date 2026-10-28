@@ -1,6 +1,9 @@
 import os
 import time
 
+import pytest
+
+from lecture_study.config import AUDIO_EXTENSIONS
 from lecture_study.scanner import HashIndex, find_stable_recordings, sha256_file
 
 
@@ -47,3 +50,10 @@ def test_hash_index_reuses_digest_until_file_changes(tmp_path):
     changed = find_stable_recordings(tmp_path, stable_seconds=0, now=time.time())[0]
     assert reloaded.hash_of(changed) != first
     assert len(calls) == 2
+
+
+@pytest.mark.parametrize("suffix", sorted(AUDIO_EXTENSIONS))
+def test_each_accepted_extension_is_found_when_stable(tmp_path, suffix):
+    path = make(tmp_path / f"registrazione{suffix}")
+    found = find_stable_recordings(tmp_path, stable_seconds=30, now=time.time())
+    assert [recording.path for recording in found] == [path]

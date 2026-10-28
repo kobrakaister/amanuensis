@@ -10,7 +10,14 @@ from urllib.parse import urlparse
 
 DEFAULT_ROOT = Path.home() / "mba-studio"
 DEFAULT_CONFIG = DEFAULT_ROOT / "config.toml"
-AUDIO_EXTENSIONS = frozenset({".wav", ".mp3", ".m4a", ".mp4", ".aac", ".flac", ".ogg"})
+AUDIO_EXTENSIONS = frozenset({
+    ".wav", ".aiff", ".aif", ".caf",
+    ".mp3",
+    ".m4a", ".mp4", ".aac",
+    ".3gp", ".3gpp", ".amr",
+    ".ogg", ".opus", ".webm",
+    ".flac",
+})
 LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1"})
 DRIVE_REMOTE = 4
 

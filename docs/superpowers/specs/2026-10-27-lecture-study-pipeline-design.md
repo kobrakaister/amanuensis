@@ -54,7 +54,19 @@ Una fase è completa solo dopo che il suo risultato è stato scritto in un file 
 
 ## Fasi
 
-Lo scanner percorre anche le sottocartelle della cartella osservata. Accetta `.wav`, `.mp3`, `.m4a`, `.mp4`, `.aac`, `.flac` e `.ogg`. Elabora una lezione alla volta, nell'ordine in cui i file sono diventati stabili.
+Lo scanner percorre anche le sottocartelle della cartella osservata. L'estensione, confrontata senza distinzione di maiuscole, decide se il file entra in coda. ffmpeg legge il contenitore e la preparazione produce sempre lo stesso WAV mono a 16 kHz. Un file con estensione accettata ma non decodificabile resta `failed`, senza nuovi tentativi.
+
+Estensioni accettate:
+
+- `.wav`, `.aiff`, `.aif`: PCM, comprese le esportazioni iOS.
+- `.caf`: registratori iOS che usano il contenitore Core Audio, con PCM o ALAC. Questa build di ffmpeg non scrive AAC dentro un CAF; un CAF che non si lascia decodificare resta `failed`.
+- `.mp3`.
+- `.m4a`, `.mp4`, `.aac`: Memo Vocali di iOS e i registratori Android che usano AAC, compreso ALAC dentro `.m4a`.
+- `.3gp`, `.3gpp`, `.amr`: registratore Android storico, in AMR.
+- `.ogg`, `.opus`, `.webm`: registratori Android più recenti, in Opus o Vorbis.
+- `.flac`: già previsto, anche se non è un formato tipico del telefono.
+
+Elabora una lezione alla volta, nell'ordine in cui i file sono diventati stabili.
 
 1. **Accettazione.** Lo scanner ignora un file finché dimensione e data di modifica non restano stabili per 30 secondi. Calcola l'hash, legge durata e formato con ffprobe e verifica lo spazio libero.
 2. **Analisi.** Misura l'energia fra 20 e 80 Hz e quella fra 80 e 300 Hz.
