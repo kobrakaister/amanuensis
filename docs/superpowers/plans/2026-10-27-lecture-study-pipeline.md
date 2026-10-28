@@ -175,7 +175,7 @@ git commit -m "docs: track lecture study pipeline branch"
 - Consumes: Task 0 (uv, `UV_PROJECT_ENVIRONMENT`).
 - Produces: eccezioni `TransientError`, `GpuOutOfMemory(TransientError)`, `RetriesExhausted`, `UnreadableAudio`, `RecordingMissing`, `InsufficientSpace`, `InvalidModelOutput(message: str, partial: str)` con attributo `.partial`.
 
-- [ ] **Step 1: Scrivi il test che fallisce**
+- [x] **Step 1: Scrivi il test che fallisce**
 
 `tests/test_smoke.py`:
 
@@ -198,7 +198,7 @@ def test_invalid_model_output_keeps_partial_text():
     assert error.partial == "## parziale"
 ```
 
-- [ ] **Step 2: Scrivi `pyproject.toml`**
+- [x] **Step 2: Scrivi `pyproject.toml`**
 
 ```toml
 [project]
@@ -222,7 +222,7 @@ build-backend = "hatchling.build"
 testpaths = ["tests"]
 ```
 
-- [ ] **Step 3: Aggiungi le dipendenze**
+- [x] **Step 3: Aggiungi le dipendenze**
 
 ```powershell
 uv add numpy faster-whisper "nvidia-cublas-cu12; sys_platform == 'win32'" "nvidia-cudnn-cu12>=9,<10; sys_platform == 'win32'"
@@ -231,7 +231,7 @@ uv add --dev pytest
 
 Expected: `uv.lock` creato; nessun errore di risoluzione.
 
-- [ ] **Step 4: Verifica CVE sull'insieme risolto**
+- [x] **Step 4: Verifica CVE sull'insieme risolto**
 
 ```powershell
 uv export --format requirements-txt --no-hashes --no-emit-project --output-file build/requirements.txt
@@ -240,7 +240,7 @@ uvx pip-audit --requirement build/requirements.txt --no-deps --disable-pip
 
 Expected: `No known vulnerabilities found`. Se pip-audit elenca una vulnerabilità senza versione corretta, **STOP** e riporta pacchetto, versione e identificativo all'utente.
 
-- [ ] **Step 5: Raccogli licenze e versioni dirette**
+- [x] **Step 5: Raccogli licenze e versioni dirette**
 
 ```powershell
 uv run --with pip-licenses pip-licenses --format=markdown --with-urls
@@ -249,7 +249,7 @@ uv tree --depth 1
 
 Expected: licenze leggibili per ogni pacchetto. `nvidia-cublas-cu12` e `nvidia-cudnn-cu12` hanno licenza proprietaria NVIDIA: uso locale, nessuna redistribuzione.
 
-- [ ] **Step 6: Scrivi il registro `docs/dependencies.md`**
+- [x] **Step 6: Scrivi il registro `docs/dependencies.md`**
 
 Usa le versioni stampate da `uv tree --depth 1` e le licenze dello step 5:
 
@@ -271,7 +271,7 @@ Verificate con `pip-audit` il 2026-10-27. Nessuna viene redistribuita: il proget
 
 Sostituisci ogni `<versione ...>` con il valore reale prima del commit; il file non deve contenere segnaposto. Conferma con l'utente che questo registro è il formato voluto al posto di uno SBOM CycloneDX.
 
-- [ ] **Step 7: Scrivi il codice minimo**
+- [x] **Step 7: Scrivi il codice minimo**
 
 `src/lecture_study/__init__.py`:
 
@@ -312,12 +312,12 @@ class InvalidModelOutput(Exception):
         self.partial = partial
 ```
 
-- [ ] **Step 8: Esegui i test**
+- [x] **Step 8: Esegui i test**
 
 Run: `uv run pytest -q`
 Expected: `3 passed`
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```powershell
 git add pyproject.toml uv.lock src tests docs/dependencies.md

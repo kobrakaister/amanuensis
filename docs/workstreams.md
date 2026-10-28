@@ -3,13 +3,13 @@
 Living list of open work. Closed entries move to [the history](workstreams-history.md) in the
 same turn they close.
 
-Last updated: 2026-10-27
+Last updated: 2026-10-28
 
 ## Open
 
 | Stream | Branch or worktree | State | Remaining work |
 |---|---|---|---|
-| Lecture study pipeline | `feat/lecture-study-pipeline` | Implementation in progress | Execute `docs/superpowers/plans/2026-10-27-lecture-study-pipeline.md` from Task 1 |
+| Lecture study pipeline | `feat/lecture-study-pipeline` | Task 1 complete | Execute `docs/superpowers/plans/2026-10-27-lecture-study-pipeline.md` from Task 2. Virtualenv: `C:\Users\Mathia.Scucchiari\mba-studio\.venv`, Python 3.12.9. |
 
 ## Do not mix
 
