@@ -28,6 +28,7 @@ class Status(StrEnum):
     NEEDS_REVIEW = "needs_review"
     FAILED = "failed"
     DONE = "done"
+    STOPPED = "stopped"
 
 
 FINAL_STATUSES = frozenset({Status.DONE, Status.FAILED, Status.NEEDS_REVIEW})

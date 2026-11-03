@@ -18,3 +18,6 @@ build/
 *.opus
 *.webm
 *.flac
+eval/out/
+# Materiale MIT OCW: licenza CC BY-NC-SA, non entra nel repository.
+data/

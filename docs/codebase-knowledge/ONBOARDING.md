@@ -1,45 +1,74 @@
-# Onboarding
+# Avvio
 
-## Stack
+Il programma legge lezioni audio su questo PC, le trascrive e scrive appunti, mappa e domande. Il codice sta in questo repository. I dati e i programmi scaricati stanno in `~/mba-studio`, fuori da OneDrive. Cancellare quella cartella toglie l'ambiente, i modelli e la libreria predefinita. Il codice resta nel repository.
 
-- Python `>=3.12` (`pyproject.toml`). `.python-version` is `3.12`. The virtualenv is `C:\Users\Mathia.Scucchiari\mba-studio\.venv` (Python 3.12.9).
-- Package `lecture-study` 0.1.0. Console script `lecture-study` points at `lecture_study.cli:main`.
-- Dependencies: `faster-whisper`, `numpy`, and on Windows `nvidia-cublas-cu12` and `nvidia-cudnn-cu12`. Dev: `pytest`.
-- External programs: ffmpeg, ffprobe, and Ollama. They are not Python packages.
+Non serve Docker e non serve un account amministratore. I driver della GPU, se ci sono, restano quelli già installati. Lo script non usa l'installer di `uv` nel profilo utente e non contatta la porta 11434.
 
-## Repository layout
+## Cosa serve
 
-- `src/lecture_study/`: pipeline, audio, transcription, Ollama client, study composer, report, CLI.
-- `tests/`: pytest.
-- `scripts/register-autostart.ps1`: Windows task `LectureStudyWatch`.
-- `docs/superpowers/`: design and plan.
-- `eval/`: optional ASR harness, separate requirements, not part of the runtime install.
+- Windows o macOS.
+- Circa 15 GB liberi sul disco del profilo, fuori da OneDrive. Il primo avvio scarica Whisper `large-v3`.
+- `ffmpeg` e `ffprobe` nel `PATH`. Su macOS vanno installati a parte: gli archivi macOS non sono nel file dei pin.
+- Ollama in ascolto su `http://127.0.0.1:11435` con il modello `qwen2.5:7b`. Se sulla porta 11434 c'è un Ollama più vecchio, lascialo com'è.
+- Python 3.12. Lo procura `uv` dentro `~/mba-studio`. Non va creato un ambiente nel repository.
 
-## Prerequisites
+Una GPU NVIDIA accelera la trascrizione. Senza CUDA il primo tentativo usa la CPU. Con CUDA, dopo due errori di memoria insufficiente si passa alla CPU.
 
-- The virtualenv above, with `UV_PROJECT_ENVIRONMENT` set to it.
-- ffmpeg and ffprobe on `PATH`.
-- Ollama listening on `http://127.0.0.1:11435` with model `qwen2.5:7b`. Do not stop the older server on port 11434.
-- An NVIDIA GPU for the default device. `FasterWhisperTranscriber` can run on CPU after two out-of-memory errors.
-- Watch folder `~\mba-studio\lezioni` and library `~\mba-studio\library`. Both are outside this OneDrive repository. There is no `config.toml` requirement: `config.load_settings` uses `Settings` defaults when the file is missing.
+## Cartelle
 
-## Quick start
+| Percorso | Contenuto |
+|---|---|
+| `~/mba-studio/bin` | `uv` scaricato dallo script |
+| `~/mba-studio/.venv` | pacchetti Python |
+| `~/mba-studio/python` | interprete installato da `uv` |
+| `~/mba-studio/cache` | cache di `uv` |
+| `~/mba-studio/hf` | Whisper `large-v3` |
+| `~/mba-studio/lezioni` | audio predefinito, se non ne scegli un altro |
+| `~/mba-studio/library` | risultati predefiniti |
+| `~/mba-studio/config.toml` | creato solo se manca |
+| `~/mba-studio/hold.json` | presente quando la coda è ferma |
 
-From the repository root, in PowerShell:
+`config.toml` assente: `up` lo crea. Se in `~/mba-studio/bin` ci sono già `ffmpeg` e `ffprobe`, il file punta a quelli. Altrimenti usa i nomi `ffmpeg` e `ffprobe` del `PATH`. L'indirizzo di Ollama resta `http://127.0.0.1:11435`. Se il file esiste già, l'avvio non lo riscrive.
+
+## Setup
+
+Dal repository, su Windows:
+
+```powershell
+scripts\studio.cmd
+```
+
+Su macOS:
+
+```sh
+sh scripts/studio.sh
+```
+
+Lo script scarica `uv` 0.11.16 in `~/mba-studio/bin` se manca o se il checksum non torna, imposta `UV_PROJECT_ENVIRONMENT`, `UV_PYTHON_INSTALL_DIR` e `UV_CACHE_DIR` dentro `~/mba-studio`, poi esegue `lecture-study up`.
+
+`up` apre `http://127.0.0.1:8765/` solo su questo PC. Se la porta è occupata, si ferma prima di leggere gli audio. Se il browser non si apre, l'indirizzo resta nel terminale. La pagina risponde anche mentre Whisper viene scaricato. Il browser si apre a download finito.
+
+Sulla pagina scegli la cartella audio e la cartella risultati, poi premi **Usa queste cartelle**. I file non vengono copiati. Una cartella dentro OneDrive, un disco di rete, o una cartella risultati dentro quella audio vengono rifiutate e restano i percorsi precedenti. Un file parte dopo 30 secondi senza cambi di dimensione e di data. Il controllo successivo arriva entro circa un minuto.
+
+La tabella elenca ogni file audio con la fase e lo stato. **Ferma** blocca la coda: la fase già iniziata finisce, le altre no. **Riprendi** compare se la coda è ferma o su una lezione in stato `stopped`. `failed`, `needs_review`, `waiting` e `paused` non hanno **Riprendi**.
+
+## Altri comandi
+
+Dalla root del repository, con l'ambiente dello studio:
 
 ```powershell
 $env:UV_PROJECT_ENVIRONMENT = "$env:USERPROFILE\mba-studio\.venv"
-$env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User')
+uv run lecture-study once
 uv run lecture-study watch
 ```
 
-`lecture-study once` processes the stable files and exits. A recording is ignored until its size and mtime have stayed still for 30 seconds.
+`once` elabora i file stabili e termina. `watch` resta in esecuzione. Su questo PC il task `LectureStudyWatch` può già eseguire `watch`: non lanciare un secondo `once` o `watch` sulla stessa cartella.
 
-The logon task `LectureStudyWatch` already runs `uv run --project` this repository with `lecture-study watch`. Do not start a second `once` while that task is running.
-
-## Running the tests
+## Test
 
 ```powershell
 $env:UV_PROJECT_ENVIRONMENT = "$env:USERPROFILE\mba-studio\.venv"
 uv run pytest -q
 ```
+
+Se la pagina è già aperta, il test che occupa la porta 8765 fallisce. Chiudi `up` e rilancialo.

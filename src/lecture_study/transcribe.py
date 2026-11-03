@@ -17,6 +17,14 @@ MIN_LANGUAGE_PROBABILITY = 0.80
 LANGUAGE_SAMPLE_SECONDS = 60
 
 
+def cuda_is_available() -> bool:
+    try:
+        import ctranslate2
+        return ctranslate2.get_cuda_device_count() > 0
+    except (ImportError, OSError, RuntimeError, AttributeError):
+        return False
+
+
 @dataclass(frozen=True)
 class Segment:
     start: float

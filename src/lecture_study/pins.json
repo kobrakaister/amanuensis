@@ -1,0 +1,84 @@
+{
+  "tools": [
+    {
+      "name": "uv",
+      "system": "windows-x64",
+      "version": "0.11.16",
+      "url": "https://github.com/astral-sh/uv/releases/download/0.11.16/uv-x86_64-pc-windows-msvc.zip",
+      "sha256": "dd9d6d6554bfab265bfa98aa8e8a406c5c3a7b97582f93de1f4d48d9154a0395",
+      "member": "uv.exe",
+      "archive": "uv",
+      "format": "zip"
+    },
+    {
+      "name": "uv",
+      "system": "mac-arm64",
+      "version": "0.11.16",
+      "url": "https://github.com/astral-sh/uv/releases/download/0.11.16/uv-aarch64-apple-darwin.tar.gz",
+      "sha256": "2b25be1af546be330b340b0a76b99f989daa6d92678fdffb87438e661e9d88fb",
+      "member": "uv-aarch64-apple-darwin/uv",
+      "archive": "uv",
+      "format": "tgz"
+    },
+    {
+      "name": "uv",
+      "system": "mac-x64",
+      "version": "0.11.16",
+      "url": "https://github.com/astral-sh/uv/releases/download/0.11.16/uv-x86_64-apple-darwin.tar.gz",
+      "sha256": "6b91ae3de155f51bd1f5b74814821c79f016a176561f252cd9ddfb976939af2e",
+      "member": "uv-x86_64-apple-darwin/uv",
+      "archive": "uv",
+      "format": "tgz"
+    },
+    {
+      "name": "ollama",
+      "system": "windows-x64",
+      "version": "0.40.11",
+      "url": "https://github.com/ollama/ollama/releases/download/v0.40.11/ollama-windows-amd64.zip",
+      "sha256": "bda4a493ba8a7c24d57263cd843cd68cee84f44aed4299eeed532acad7eda12a",
+      "member": "ollama.exe",
+      "archive": "ollama",
+      "format": "zip"
+    },
+    {
+      "name": "ollama",
+      "system": "mac-arm64",
+      "version": "0.40.11",
+      "url": "https://github.com/ollama/ollama/releases/download/v0.40.11/Ollama-darwin.zip",
+      "sha256": "cff3c721f69b8efb186c4c75775e1e777516ca9c2863065a25367f739e7623c4",
+      "member": "Ollama.app/Contents/Resources/ollama",
+      "archive": "ollama",
+      "format": "zip"
+    },
+    {
+      "name": "ollama",
+      "system": "mac-x64",
+      "version": "0.40.11",
+      "url": "https://github.com/ollama/ollama/releases/download/v0.40.11/Ollama-darwin.zip",
+      "sha256": "cff3c721f69b8efb186c4c75775e1e777516ca9c2863065a25367f739e7623c4",
+      "member": "Ollama.app/Contents/Resources/ollama",
+      "archive": "ollama",
+      "format": "zip"
+    },
+    {
+      "name": "ffmpeg",
+      "system": "windows-x64",
+      "version": "9.0.2",
+      "url": "https://github.com/GyanD/codexffmpeg/releases/download/9.0.2/ffmpeg-9.0.2-essentials_build.zip",
+      "sha256": "60f467265b1e312373dbcd92200c2618a74850f98d3d078e94296bb3fa2047ba",
+      "member": "ffmpeg-9.0.2-essentials_build/bin/ffmpeg.exe",
+      "archive": "ffmpeg",
+      "format": "zip"
+    },
+    {
+      "name": "ffprobe",
+      "system": "windows-x64",
+      "version": "9.0.2",
+      "url": "https://github.com/GyanD/codexffmpeg/releases/download/9.0.2/ffmpeg-9.0.2-essentials_build.zip",
+      "sha256": "60f467265b1e312373dbcd92200c2618a74850f98d3d078e94296bb3fa2047ba",
+      "member": "ffmpeg-9.0.2-essentials_build/bin/ffprobe.exe",
+      "archive": "ffmpeg",
+      "format": "zip"
+    }
+  ]
+}

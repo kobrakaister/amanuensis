@@ -18,13 +18,14 @@ from lecture_study.errors import (
     TransientError,
     UnreadableAudio,
 )
+from lecture_study.hold import default_hold_path
 from lecture_study.jobs import FINAL_STATUSES, STAGES, Job, JobState, Stage, Status
 from lecture_study.llm import LanguageModel
 from lecture_study.report import render_report
 from lecture_study.retry import call_with_retries
 from lecture_study.scanner import Recording
 from lecture_study.study import StudyComposer
-from lecture_study.transcribe import Transcriber, Transcript, render_transcript
+from lecture_study.transcribe import Transcriber, Transcript, cuda_is_available, render_transcript
 
 log = logging.getLogger(__name__)
 OUT_OF_MEMORY_BEFORE_CPU = 2
@@ -43,6 +44,8 @@ class Pipeline:
         prepare: Callable[..., audio.Prepared] = audio.prepare,
         free_bytes: Callable[[Path], int] = lambda path: shutil.disk_usage(path).free,
         sleep: Callable[[float], None] = time.sleep,
+        cuda_available: Callable[[], bool] = cuda_is_available,
+        hold_path: Path | None = None,
     ) -> None:
         self.settings = settings
         self._transcriber = transcriber
@@ -52,6 +55,8 @@ class Pipeline:
         self._prepare_audio = prepare
         self._free_bytes = free_bytes
         self._sleep = sleep
+        self._cuda_available = cuda_available
+        self._hold_path = default_hold_path() if hold_path is None else hold_path
         self._model_used = False
         self._handlers = {
             Stage.ACCEPT: self._accept,
@@ -66,7 +71,9 @@ class Pipeline:
     def process(self, recording: Recording, sha256: str) -> JobState:
         job = Job(self.settings.library_dir / sha256)
         state = job.load_state()
-        if state.status in FINAL_STATUSES:
+        if state.status in FINAL_STATUSES or state.status == Status.STOPPED:
+            return state
+        if self._hold_path.exists():
             return state
         self._remember_path(job, recording)
         self._model_used = False
@@ -80,8 +87,12 @@ class Pipeline:
                 job.file(f"{stage}.partial.md").unlink(missing_ok=True)
                 state.completed.append(stage.value)
                 job.save_state(state)
-            state.status, state.stage = Status.DONE, None
-            shutil.rmtree(job.work_dir, ignore_errors=True)
+                if self._hold_path.exists():
+                    state.status = Status.STOPPED
+                    break
+            else:
+                state.status, state.stage = Status.DONE, None
+                shutil.rmtree(job.work_dir, ignore_errors=True)
         except UnreadableAudio as exc:
             state.status, state.message = Status.FAILED, f"audio illeggibile: {exc}"
         except (RetriesExhausted, InsufficientSpace) as exc:
@@ -171,7 +182,7 @@ class Pipeline:
 
         def attempt() -> Transcript:
             nonlocal out_of_memory
-            device = "cpu" if out_of_memory >= OUT_OF_MEMORY_BEFORE_CPU else "cuda"
+            device = "cpu" if not self._cuda_available() or out_of_memory >= OUT_OF_MEMORY_BEFORE_CPU else "cuda"
             try:
                 return self._transcriber.transcribe(job.prepared_wav, device=device)
             except GpuOutOfMemory:

@@ -10,7 +10,7 @@ from lecture_study.scanner import Recording
 from lecture_study.transcribe import Segment, Transcript
 
 SHA = "a" * 64
-NOTES = "## Tema\n- Punto [00:00:05]"
+NOTES = "## Tema\n- Punto [00:00:00]"
 MINDMAP = "# Lezione\n## Tema\n- Punto"
 QUESTIONS = "\n\n".join(f"### {i}. Domanda {i}?\nRisposta attesa: r.\nRiferimento: [00:00:0{i}]" for i in range(1, 6))
 
@@ -80,7 +80,7 @@ def recording(tmp_path):
     return Recording(path, 5, 1)
 
 
-def make_pipeline(tmp_path, *, transcriber=None, model=None, probe=None, free=10**12, sleeps=None):
+def make_pipeline(tmp_path, *, transcriber=None, model=None, probe=None, free=10**12, sleeps=None, cuda_available=None, hold_path=None):
     settings = Settings(watch_dir=tmp_path / "lezioni", library_dir=tmp_path / "library")
     return Pipeline(
         settings,
@@ -91,6 +91,8 @@ def make_pipeline(tmp_path, *, transcriber=None, model=None, probe=None, free=10
         prepare=fake_prepare,
         free_bytes=lambda path: free,
         sleep=sleeps.append if sleeps is not None else (lambda seconds: None),
+        cuda_available=cuda_available if cuda_available is not None else (lambda: True),
+        hold_path=hold_path or (tmp_path / "hold.json"),
     )
 
 
@@ -160,7 +162,7 @@ def test_unreadable_audio_fails_and_is_not_retried(tmp_path, recording):
 
 
 def test_invalid_notes_need_review_and_resume_after_state_reset(tmp_path, recording):
-    state = make_pipeline(tmp_path, model=FakeModel(replies=["niente", "ancora niente"])).process(recording, SHA)
+    state = make_pipeline(tmp_path, model=FakeModel(replies=["niente", "ancora niente", "ancora niente"])).process(recording, SHA)
     current = job(tmp_path)
     assert state.status == Status.NEEDS_REVIEW
     assert current.file("notes.partial.md").read_text(encoding="utf-8") == "ancora niente\n"
