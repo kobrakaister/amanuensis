@@ -1,7 +1,7 @@
 [project]
 name = "lecture-study"
 version = "0.1.0"
-description = "Pipeline locale che trasforma registrazioni di lezioni in materiale di studio"
+description = "Local pipeline that turns lecture recordings into study material"
 requires-python = ">=3.12"
 dependencies = [
     "faster-whisper>=1.2.1",

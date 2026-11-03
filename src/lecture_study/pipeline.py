@@ -94,7 +94,7 @@ class Pipeline:
                 state.status, state.stage = Status.DONE, None
                 shutil.rmtree(job.work_dir, ignore_errors=True)
         except UnreadableAudio as exc:
-            state.status, state.message = Status.FAILED, f"audio illeggibile: {exc}"
+            state.status, state.message = Status.FAILED, f"unreadable audio: {exc}"
         except (RetriesExhausted, InsufficientSpace) as exc:
             state.status, state.message = Status.WAITING, str(exc)
         except RecordingMissing as exc:
@@ -103,8 +103,8 @@ class Pipeline:
             write_text_atomic(job.file(f"{state.stage}.partial.md"), exc.partial + "\n")
             state.status, state.message = Status.NEEDS_REVIEW, str(exc)
         except Exception as exc:
-            log.exception("job %s: errore inatteso nella fase %s", sha256[:12], state.stage)
-            state.status, state.message = Status.FAILED, f"errore inatteso: {type(exc).__name__}: {exc}"
+            log.exception("job %s: unexpected error in stage %s", sha256[:12], state.stage)
+            state.status, state.message = Status.FAILED, f"unexpected error: {type(exc).__name__}: {exc}"
         if self._model_used:
             self._model.release()
         job.save_state(state)
@@ -119,7 +119,7 @@ class Pipeline:
             job.write_source(source)
 
     def _audio_call(self, recording: Recording, operation: Callable[[], T]) -> T:
-        missing = RecordingMissing(f"registrazione non trovata: {recording.path}")
+        missing = RecordingMissing(f"recording not found: {recording.path}")
         if not recording.path.exists():
             raise missing
         try:
@@ -131,8 +131,8 @@ class Pipeline:
 
     def _on_retry(self, state: JobState, stage: Stage) -> Callable[[TransientError, int, int], None]:
         def record(error: TransientError, retry: int, delay: int) -> None:
-            state.events.append(f"{stage}: {error}; ripetizione {retry} tra {delay} s")
-            log.warning("fase %s: errore temporaneo, ripetizione %d tra %d s", stage, retry, delay)
+            state.events.append(f"{stage}: {error}; retry {retry} in {delay} s")
+            log.warning("stage %s: temporary error, retry %d in %d s", stage, retry, delay)
 
         return record
 
@@ -166,7 +166,7 @@ class Pipeline:
         required = audio.required_free_bytes(source["duration_seconds"])
         free = self._free_bytes(self.settings.library_dir)
         if free < required:
-            raise InsufficientSpace(f"spazio insufficiente: servono {required // 2**20} MB, liberi {free // 2**20} MB")
+            raise InsufficientSpace(f"not enough disk space: need {required // 2**20} MB, free {free // 2**20} MB")
         highpass_hz = self.settings.highpass_hz if source["analysis"]["apply"] else None
         prepared = self._audio_call(
             recording,

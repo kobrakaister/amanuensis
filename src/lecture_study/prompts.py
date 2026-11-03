@@ -5,18 +5,20 @@ PROMPTS = {
             "Usa soltanto il contenuto della lezione fornita e non aggiungere informazioni esterne."
         ),
         "notes": (
-            "Questa è una parte della trascrizione di una lezione. Ogni riga inizia con il tempo [hh:mm:ss].\n"
+            "Questa è una parte della trascrizione di una lezione. Ogni riga inizia con un orario tra parentesi quadre.\n"
             "Scrivi appunti di studio organizzati per argomento. Per ogni argomento usa un titolo che inizia con '## ' "
             "e sotto un elenco di punti, uno per idea. "
-            "Termina ogni punto, sulla stessa riga, con l'orario copiato da una riga della trascrizione, nel formato [hh:mm:ss]. "
-            "Non inventare orari e non lasciare un orario da solo. "
+            "Termina ogni punto, sulla stessa riga, con l'orario copiato da una riga, ore minuti e secondi compresi. "
+            "{example} "
+            "Non inventare orari, non accorciarli e non lasciare un orario da solo. "
             "Non scrivere introduzioni né conclusioni.\n\nTrascrizione:\n{text}"
         ),
         "notes_repair": (
             "Questi appunti non hanno l'orario su ogni punto. Riscrivili con lo stesso contenuto. "
             "Mantieni i titoli che iniziano con '## '. "
-            "Ogni punto deve finire con un orario [hh:mm:ss] copiato da una riga della trascrizione. "
-            "Non inventare orari.\n\nAppunti:\n{notes}\n\nTrascrizione:\n{text}"
+            "Ogni punto deve finire, sulla stessa riga, con un orario copiato da una riga della trascrizione. "
+            "{example} "
+            "Non inventare orari e non accorciarli.\n\nAppunti:\n{notes}\n\nTrascrizione:\n{text}"
         ),
         "mindmap": (
             "Costruisci la mappa mentale della lezione a partire da questi appunti. "
@@ -39,18 +41,20 @@ PROMPTS = {
             "Use only the content of the lecture provided and do not add outside information."
         ),
         "notes": (
-            "This is part of a lecture transcript. Each line starts with the time [hh:mm:ss].\n"
+            "This is part of a lecture transcript. Each line starts with a time in square brackets.\n"
             "Write study notes organised by topic. For each topic use a heading starting with '## ' "
             "followed by one bullet per idea. "
-            "End each bullet, on the same line, with the time copied from a transcript line, in the format [hh:mm:ss]. "
-            "Do not invent times and do not leave a time on its own line. "
+            "End each bullet, on the same line, with the time copied from a line, including hours, minutes and seconds. "
+            "{example} "
+            "Do not invent times, do not shorten them and do not leave a time on its own line. "
             "Do not write an introduction or a conclusion.\n\nTranscript:\n{text}"
         ),
         "notes_repair": (
             "These notes do not put a time on every point. Rewrite them with the same content. "
             "Keep headings that start with '## '. "
-            "End every point with a time [hh:mm:ss] copied from a transcript line. "
-            "Do not invent times.\n\nNotes:\n{notes}\n\nTranscript:\n{text}"
+            "End every point, on the same line, with a time copied from a transcript line. "
+            "{example} "
+            "Do not invent times and do not shorten them.\n\nNotes:\n{notes}\n\nTranscript:\n{text}"
         ),
         "mindmap": (
             "Build the mind map of the lecture from these notes. "

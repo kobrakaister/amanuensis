@@ -40,7 +40,7 @@ class FakeModel:
         self.calls += 1
         if self.failures:
             self.failures -= 1
-            raise TransientError("Ollama non raggiungibile")
+            raise TransientError("Ollama is unreachable")
         if self.replies is not None:
             return self.replies.pop(0)
         if "Trascrizione:" in prompt:
@@ -113,7 +113,7 @@ def test_happy_path_produces_every_file_and_cleans_work_dir(tmp_path, recording)
     assert source["preparation"]["highpass_applied"] is True
     assert source["transcription"]["language"] == "it"
     assert "[00:00:00] Oggi parliamo di strategia." in current.file("transcript.md").read_text(encoding="utf-8")
-    assert "- Stato: done" in current.file("report.md").read_text(encoding="utf-8")
+    assert "- Status: done" in current.file("report.md").read_text(encoding="utf-8")
     assert model.released == 1
     assert recording.path.read_bytes() == b"audio"
 
@@ -195,7 +195,7 @@ def test_insufficient_space_waits_before_preparation(tmp_path, recording):
     state = make_pipeline(tmp_path, free=0).process(recording, SHA)
     assert state.status == Status.WAITING
     assert state.stage == "prepare"
-    assert "spazio insufficiente" in state.message
+    assert "not enough disk space" in state.message
 
 
 def test_state_does_not_advance_when_final_file_is_not_written(tmp_path, recording, monkeypatch):

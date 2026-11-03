@@ -96,7 +96,7 @@ def choose_folders(config: Path, watch: Path, library: Path) -> str:
     StudyHandler.draft_watch = None
     StudyHandler.draft_library = None
     if not str(watch).strip() or not str(library).strip():
-        StudyHandler.notice = "Servono entrambe le cartelle."
+        StudyHandler.notice = "Both folders are required."
         return StudyHandler.notice
     if not remember_paths(config, watch, library, roots=onedrive_roots(), drive_type=windows_drive_type):
         try:
@@ -104,9 +104,9 @@ def choose_folders(config: Path, watch: Path, library: Path) -> str:
         except OSError:
             nested = False
         if nested:
-            StudyHandler.notice = "La cartella risultati non può stare dentro la cartella audio. Restano le cartelle già in uso."
+            StudyHandler.notice = "The results folder cannot sit inside the audio folder. The folders already in use stay."
         else:
-            StudyHandler.notice = "Cartelle rifiutate. Restano quelle precedenti."
+            StudyHandler.notice = "Those folders were rejected. The previous ones stay."
         return StudyHandler.notice
     stored = load_settings(config)
     StudyHandler.watch = stored.watch_dir
@@ -119,7 +119,7 @@ def apply_picked(which: str, picked: Path | None) -> str:
     if picked is None:
         return ""
     if not picked.is_dir():
-        StudyHandler.notice = "La cartella non esiste."
+        StudyHandler.notice = "That folder does not exist."
         return StudyHandler.notice
     watch = StudyHandler.watch
     library = StudyHandler.library
@@ -130,7 +130,7 @@ def apply_picked(which: str, picked: Path | None) -> str:
     else:
         return ""
     if StudyHandler.config is None:
-        StudyHandler.notice = "Configurazione non disponibile."
+        StudyHandler.notice = "Configuration is not available."
         return StudyHandler.notice
     return choose_folders(StudyHandler.config, watch, library)
 
@@ -209,8 +209,8 @@ def lecture_section(library: Path, watch: Path | None = None, hold: Path | None 
     summary = _progress_summary(rows, held=held, has_audio=bool(files) or bool(jobs))
     resume = ""
     if held and not any(row[2] for row in rows):
-        resume = '<form method="post" action="/hold"><button name="action" value="resume">Riprendi</button></form>'
-    caption = f"<p>Risultati in uso: {html.escape(library.as_posix())}</p><p>{html.escape(summary)}</p>{resume}"
+        resume = '<form method="post" action="/hold"><button name="action" value="resume">Resume</button></form>'
+    caption = f"<p>Results in use: {html.escape(library.as_posix())}</p><p>{html.escape(summary)}</p>{resume}"
     body = "".join(row[0] for row in rows)
     return caption + f"<table>{body}</table>"
 
@@ -245,10 +245,10 @@ def _jobs_by_source(library: Path) -> dict[Path, dict]:
 
 def _progress_row(name: str, job: dict | None, *, held: bool, library: Path) -> tuple[str, str, bool]:
     status = str(job.get("status") or "") if job else ""
-    stage = (job.get("stage") if job else None) or "—"
+    stage = (job.get("stage") if job else None) or "-"
     stopped = status == "stopped"
     if not status:
-        status = "in pausa" if held else "in coda"
+        status = "on hold" if held else "queued"
     resume = ""
     links = ""
     if job is not None:
@@ -261,7 +261,7 @@ def _progress_row(name: str, job: dict | None, *, held: bool, library: Path) -> 
         if stopped:
             resume = (
                 f'<form method="post" action="/hold"><input type="hidden" name="job" value="{job["sha"]}">'
-                '<button name="action" value="resume">Riprendi</button></form>'
+                '<button name="action" value="resume">Resume</button></form>'
             )
     html_row = (
         "<tr><td>"
@@ -281,15 +281,15 @@ def _progress_row(name: str, job: dict | None, *, held: bool, library: Path) -> 
 
 def _progress_summary(rows: list[tuple[str, str, bool]], *, held: bool, has_audio: bool) -> str:
     if not has_audio:
-        return "Nessun file audio nella cartella in uso."
+        return "No audio files in the folder in use."
     if held:
-        return "Elaborazione ferma. I file non partono finché non premi Riprendi."
+        return "Processing is stopped. Files stay put until you press Resume."
     statuses = [status for _, status, _ in rows]
     if "running" in statuses:
-        return "Un file è in corso. La fase è nella tabella."
-    if "in coda" in statuses:
-        return "File in coda. Il primo parte al prossimo controllo."
-    return "Nessun file in corso."
+        return "A file is running. Its stage is in the table."
+    if "queued" in statuses:
+        return "Files are queued. The first one starts at the next check."
+    return "Nothing is running."
 
 
 def render_page(
@@ -301,7 +301,7 @@ def render_page(
     notice: str = "",
     hold: Path | None = None,
 ) -> str:
-    ollama = "Ollama: risponde" if ollama_up else "Ollama: non risponde"
+    ollama = "Ollama: responding" if ollama_up else "Ollama: not responding"
     shown_watch = "" if watch is None else watch.as_posix()
     shown_library = (library if library_field is None else library_field).as_posix()
     notice_html = f"<p>{html.escape(notice)}</p>" if notice else ""
@@ -309,12 +309,12 @@ def render_page(
         "<!doctype html><html><head><meta charset=\"utf-8\"></head><body>"
         f"<p>{ollama}</p>"
         "<form method=\"post\" action=\"/paths\">"
-        f"<label>Cartella audio <input name=\"watch\" value=\"{html.escape(shown_watch, quote=True)}\" size=\"80\"></label> "
-        "<button type=\"submit\" formaction=\"/pick\" name=\"which\" value=\"watch\">Scegli cartella audio</button> "
-        "<button type=\"submit\" formaction=\"/hold\" name=\"action\" value=\"stop\">Ferma</button><br>"
-        f"<label>Cartella risultati <input name=\"library\" value=\"{html.escape(shown_library, quote=True)}\" size=\"80\"></label> "
-        "<button type=\"submit\" formaction=\"/pick\" name=\"which\" value=\"library\">Scegli cartella risultati</button><br>"
-        "<button type=\"submit\">Usa queste cartelle</button></form>"
+        f"<label>Audio folder <input name=\"watch\" value=\"{html.escape(shown_watch, quote=True)}\" size=\"80\"></label> "
+        "<button type=\"submit\" formaction=\"/pick\" name=\"which\" value=\"watch\">Choose audio folder</button> "
+        "<button type=\"submit\" formaction=\"/hold\" name=\"action\" value=\"stop\">Stop</button><br>"
+        f"<label>Results folder <input name=\"library\" value=\"{html.escape(shown_library, quote=True)}\" size=\"80\"></label> "
+        "<button type=\"submit\" formaction=\"/pick\" name=\"which\" value=\"library\">Choose results folder</button><br>"
+        "<button type=\"submit\">Use these folders</button></form>"
         f"{notice_html}"
         f"<div id=\"lectures\">{lecture_section(library, watch, hold)}</div>"
         "<script>setInterval(function(){fetch('/list').then(function(r){return r.text()}).then(function(t){document.getElementById('lectures').innerHTML=t})},5000)</script>"
@@ -435,10 +435,10 @@ class StudyHandler(BaseHTTPRequestHandler):
             which = fields.get("which", [""])[0]
             if which == "watch":
                 current = self.watch
-                title = "Cartella audio"
+                title = "Audio folder"
             elif which == "library":
                 current = self.library
-                title = "Cartella risultati"
+                title = "Results folder"
             else:
                 self._redirect()
                 return
@@ -447,7 +447,7 @@ class StudyHandler(BaseHTTPRequestHandler):
             return
         if parsed.path == "/paths":
             if self.config is None:
-                StudyHandler.notice = "Configurazione non disponibile."
+                StudyHandler.notice = "Configuration is not available."
             else:
                 choose_folders(self.config, Path(fields.get("watch", [""])[0]), Path(fields.get("library", [""])[0]))
             self._redirect()

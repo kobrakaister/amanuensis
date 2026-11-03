@@ -133,7 +133,7 @@ def start_studio(
         _write_config(config_path, studio)
     kind = identify(OLLAMA_PORT)
     if kind == "other":
-        raise PortBusy(f"la porta {OLLAMA_PORT} non è Ollama")
+        raise PortBusy(f"port {OLLAMA_PORT} is not Ollama")
     proc = None
     if kind == "free":
         binary = "ollama.exe" if os.name == "nt" else "ollama"

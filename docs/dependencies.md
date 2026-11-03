@@ -1,23 +1,23 @@
-# Dipendenze
+# Dependencies
 
-Verificate con `pip-audit` il 2026-10-27. Nessuna viene redistribuita: il progetto gira solo su questo PC.
+Checked with `pip-audit` on 2026-10-27. None of these are redistributed. The project runs only on this PC.
 
-| Componente | Versione | Uso | Licenza | Fonte | Supporto | SBOM del fornitore |
+| Component | Version | Use | License | Source | Support | Vendor SBOM |
 |---|---|---|---|---|---|---|
-| numpy | 2.5.4 | analisi delle bande audio | BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 | PyPI | rilasci attivi | non pubblicata |
-| faster-whisper | 1.2.1 | trascrizione | MIT | PyPI, SYSTRAN | rilasci attivi | non pubblicata |
-| nvidia-cublas-cu12 | 12.9.2.10 | GPU per CTranslate2 | NVIDIA proprietaria | PyPI, NVIDIA | CUDA 12 supportato | non pubblicata |
-| nvidia-cudnn-cu12 | 9.27.0.42 | GPU per CTranslate2 | NVIDIA proprietaria | PyPI, NVIDIA | cuDNN 9 supportato | non pubblicata |
-| pytest | 9.1.1 | test, solo sviluppo | MIT | PyPI | rilasci attivi | non pubblicata |
-| ffmpeg | 9.0.2 | decodifica e filtro | LGPL/GPL | winget Gyan.FFmpeg; lo studio scarica anche lo zip GyanD `ffmpeg-9.0.2-essentials_build.zip` (SHA-256 `60f467265b1e312373dbcd92200c2618a74850f98d3d078e94296bb3fa2047ba`) solo per Windows | rilasci attivi | non pubblicata |
-| Ollama | 0.40.11 | modello linguistico locale | MIT | winget Ollama.Ollama; lo studio scarica gli zip GitHub `v0.40.11` elencati in `sha256sum.txt` | rilasci attivi | non pubblicata |
-| uv | 0.11.16 | ambiente dello studio | MIT OR Apache-2.0 | GitHub astral-sh/uv, checksum nel dist-manifest | rilasci attivi | non pubblicata |
+| numpy | 2.5.4 | audio band analysis | BSD-3-Clause AND 0BSD AND MIT AND Zlib AND CC0-1.0 | PyPI | active releases | not published |
+| faster-whisper | 1.2.1 | transcription | MIT | PyPI, SYSTRAN | active releases | not published |
+| nvidia-cublas-cu12 | 12.9.2.10 | GPU libraries for CTranslate2 | NVIDIA proprietary | PyPI, NVIDIA | CUDA 12 supported | not published |
+| nvidia-cudnn-cu12 | 9.27.0.42 | GPU libraries for CTranslate2 | NVIDIA proprietary | PyPI, NVIDIA | cuDNN 9 supported | not published |
+| pytest | 9.1.1 | tests, development only | MIT | PyPI | active releases | not published |
+| ffmpeg | 9.0.2 | decode and filter | LGPL/GPL | winget Gyan.FFmpeg; the studio also downloads the GyanD zip `ffmpeg-9.0.2-essentials_build.zip` (SHA-256 `60f467265b1e312373dbcd92200c2618a74850f98d3d078e94296bb3fa2047ba`) for Windows only | active releases | not published |
+| Ollama | 0.40.11 | local language model | MIT | winget Ollama.Ollama; the studio downloads the GitHub zips for `v0.40.11` listed in `sha256sum.txt` | active releases | not published |
+| uv | 0.11.16 | studio environment | MIT OR Apache-2.0 | GitHub astral-sh/uv, checksum in the dist-manifest | active releases | not published |
 
-Il harness in `eval/` non entra nel pacchetto. Le quattro dipendenze dirette sotto sono state risolte il 2026-10-28; `uv pip compile` più `pip-audit` sul lock risultante non ha trovato vulnerabilità note. Non vengono redistribuite.
+The harness in `eval/` is not part of the package. The four direct dependencies below were resolved on 2026-10-28. `uv pip compile` plus `pip-audit` on the resulting lock found no known vulnerabilities. They are not redistributed.
 
-| Componente | Versione | Uso | Licenza | Fonte | Supporto | SBOM del fornitore |
+| Component | Version | Use | License | Source | Support | Vendor SBOM |
 |---|---|---|---|---|---|---|
-| datasets | 5.1.0 | lettura in streaming di AMI e mTEDx | Apache-2.0 | PyPI, Hugging Face | rilasci attivi | non pubblicata |
-| soundfile | 0.14.0 | lettura e scrittura WAV | BSD-3-Clause | PyPI | rilasci attivi | non pubblicata |
-| librosa | 1.0.0 | ricampionamento a 16 kHz | ISC | PyPI | rilasci attivi | non pubblicata |
-| jiwer | 4.0.0 | WER e CER | Apache-2.0 | PyPI | rilasci attivi | non pubblicata |
+| datasets | 5.1.0 | streaming reads of AMI and mTEDx | Apache-2.0 | PyPI, Hugging Face | active releases | not published |
+| soundfile | 0.14.0 | WAV read and write | BSD-3-Clause | PyPI | active releases | not published |
+| librosa | 1.0.0 | resampling to 16 kHz | ISC | PyPI | active releases | not published |
+| jiwer | 4.0.0 | WER and CER | Apache-2.0 | PyPI | active releases | not published |

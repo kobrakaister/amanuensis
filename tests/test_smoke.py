@@ -11,6 +11,6 @@ def test_gpu_out_of_memory_is_transient():
 
 
 def test_invalid_model_output_keeps_partial_text():
-    error = InvalidModelOutput("risposta non valida per notes", "## parziale")
-    assert str(error) == "risposta non valida per notes"
-    assert error.partial == "## parziale"
+    error = InvalidModelOutput("invalid response for notes", "## partial")
+    assert str(error) == "invalid response for notes"
+    assert error.partial == "## partial"

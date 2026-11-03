@@ -39,13 +39,13 @@ def probe(path: Path, *, ffprobe: str = "ffprobe") -> ProbeResult:
         raise UnreadableAudio(_last_line(process.stderr) or f"ffprobe exit {process.returncode}")
     data = json.loads(process.stdout or "{}")
     if not data.get("streams"):
-        raise UnreadableAudio("nessuna traccia audio")
+        raise UnreadableAudio("no audio track")
     try:
         duration = float(data["format"]["duration"])
     except (KeyError, TypeError, ValueError):
-        raise UnreadableAudio("durata non disponibile") from None
+        raise UnreadableAudio("duration unavailable") from None
     if duration <= 0:
-        raise UnreadableAudio("durata nulla")
+        raise UnreadableAudio("duration is zero")
     return ProbeResult(duration, data["format"].get("format_name", ""))
 
 
@@ -122,7 +122,7 @@ def prepare(
         if process.returncode == 0:
             os.replace(partial, target)
             return Prepared(target, hz is not None, note)
-        note = f"filtro passa-alto non applicato: {_last_line(process.stderr) or process.returncode}"
+        note = f"high-pass filter not applied: {_last_line(process.stderr) or process.returncode}"
     partial.unlink(missing_ok=True)
     raise UnreadableAudio(_last_line(process.stderr) or f"ffmpeg exit {process.returncode}")
 

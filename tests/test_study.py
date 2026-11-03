@@ -149,6 +149,32 @@ def test_english_notes_prompt_asks_for_one_point_per_idea():
     assert "definitions, concepts, examples and connections" not in prompt
 
 
+def test_notes_prompt_shows_one_real_line_as_the_pattern():
+    spoken = [Segment(24.0, 30.0, "ci diamo del tu")]
+    model = ScriptedModel(["## Tema\n- punto [00:00:24]"])
+    StudyComposer(model).notes(spoken, "it")
+    prompt = model.prompts[0]
+    assert "Esempio. Dalla riga [00:00:24] ci diamo del tu scrivi: - ci diamo del tu [00:00:24]" in prompt
+    assert "[hh:mm:ss]" not in prompt
+
+
+def test_english_notes_prompt_shows_one_real_line_as_the_pattern():
+    spoken = [Segment(24.0, 30.0, "we use first names")]
+    model = ScriptedModel(["## Topic\n- point [00:00:24]"])
+    StudyComposer(model).notes(spoken, "en")
+    prompt = model.prompts[0]
+    assert "Example. From the line [00:00:24] we use first names write: - we use first names [00:00:24]" in prompt
+    assert "[hh:mm:ss]" not in prompt
+
+
+def test_notes_repair_prompt_shows_one_real_line_as_the_pattern():
+    spoken = [Segment(24.0, 30.0, "ci diamo del tu")]
+    bad = "## Tema\n- punto (00:24-00:38)"
+    model = ScriptedModel([bad, bad, "## Tema\n- punto [00:00:24]"])
+    StudyComposer(model).notes(spoken, "it")
+    assert "Esempio. Dalla riga [00:00:24] ci diamo del tu scrivi: - ci diamo del tu [00:00:24]" in model.prompts[-1]
+
+
 def test_notes_repair_rejects_an_invented_time():
     model = ScriptedModel([
         "## Tema\n- punto senza orario",

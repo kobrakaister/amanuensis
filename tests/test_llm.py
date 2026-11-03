@@ -47,7 +47,7 @@ def test_unreachable_server_is_transient():
     def urlopen(request, timeout):
         raise urllib.error.URLError(ConnectionRefusedError())
 
-    with pytest.raises(TransientError, match="non raggiungibile"):
+    with pytest.raises(TransientError, match="unreachable"):
         client(urlopen).complete("s", "p")
 
 

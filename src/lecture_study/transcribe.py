@@ -94,7 +94,7 @@ def read_wav_mono(path: Path) -> np.ndarray:
         channels, width, rate = handle.getnchannels(), handle.getsampwidth(), handle.getframerate()
         frames = handle.readframes(handle.getnframes())
     if (channels, width, rate) != (1, 2, 16000):
-        raise UnreadableAudio("il WAV di lavoro deve essere mono, 16 kHz, 16 bit")
+        raise UnreadableAudio("the work WAV must be mono, 16 kHz, 16-bit")
     return np.frombuffer(frames, dtype="<i2").astype(np.float32) / 32768.0
 
 

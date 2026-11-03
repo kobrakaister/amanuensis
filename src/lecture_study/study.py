@@ -96,6 +96,17 @@ def _times_are_copied(notes: str, source: str) -> bool:
     return bool(found) and found <= set(TIMESTAMP.findall(source))
 
 
+def time_example(transcript: str, language: str) -> str:
+    match = re.search(r"^\[(\d{2}:\d{2}:\d{2})\]\s+(\S.*?)\s*$", transcript, re.MULTILINE)
+    if match:
+        stamp, words = match.group(1), match.group(2)
+    else:
+        stamp, words = "00:00:00", "frase" if language == "it" else "sentence"
+    if language == "en":
+        return f"Example. From the line [{stamp}] {words} write: - {words} [{stamp}]"
+    return f"Esempio. Dalla riga [{stamp}] {words} scrivi: - {words} [{stamp}]"
+
+
 def _strip_fence(text: str) -> str:
     lines = text.strip().splitlines()
     if len(lines) >= 2 and lines[0].startswith("```") and lines[-1].strip() == "```":
@@ -108,23 +119,33 @@ class StudyComposer:
         self._model = model
         self._call = call
 
-    def _generate(self, language: str, kind: str, text: str, is_valid: Callable[[str], bool]) -> str:
+    def _generate(
+        self,
+        language: str,
+        kind: str,
+        text: str,
+        is_valid: Callable[[str], bool],
+        example: str | None = None,
+    ) -> str:
         prompts = PROMPTS[language]
-        prompt = prompts[kind].format(text=text)
+        fields = {"text": text}
+        if example is not None:
+            fields["example"] = example
+        prompt = prompts[kind].format(**fields)
         output = ""
         for _ in range(2):
             output = normalize_timestamps(_strip_fence(self._call(lambda: self._model.complete(prompts["system"], prompt))))
             if is_valid(output):
                 return output
-        raise InvalidModelOutput(f"risposta non valida per {kind}", output)
+        raise InvalidModelOutput(f"invalid response for {kind}", output)
 
     def _repair_notes(self, language: str, notes: str, source: str) -> str:
         prompts = PROMPTS[language]
-        prompt = prompts["notes_repair"].format(notes=notes, text=source)
+        prompt = prompts["notes_repair"].format(notes=notes, text=source, example=time_example(source, language))
         output = normalize_timestamps(_strip_fence(self._call(lambda: self._model.complete(prompts["system"], prompt))))
         if notes_are_valid(output) and _times_are_copied(output, source):
             return output
-        raise InvalidModelOutput("risposta non valida per notes", output)
+        raise InvalidModelOutput("invalid response for notes", output)
 
     def notes(self, segments: Sequence[Segment], language: str) -> str:
         parts: list[str] = []
@@ -135,7 +156,7 @@ class StudyComposer:
                 return notes_are_valid(output) and _times_are_copied(output, transcript)
 
             try:
-                parts.append(self._generate(language, "notes", source, accept))
+                parts.append(self._generate(language, "notes", source, accept, time_example(source, language)))
             except InvalidModelOutput as exc:
                 try:
                     parts.append(self._repair_notes(language, exc.partial, source))

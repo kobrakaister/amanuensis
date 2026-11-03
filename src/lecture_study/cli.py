@@ -70,7 +70,7 @@ def configure_logging(library_dir: Path) -> None:
 
 def identify_port(port: int) -> str:
     if port != 11435:
-        raise RuntimeError(f"porta non prevista: {port}")
+        raise RuntimeError(f"unexpected port: {port}")
     try:
         with socket.create_connection(("127.0.0.1", port), timeout=0.3):
             connected = True
@@ -263,7 +263,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         settings = load_settings(args.config)
     except ConfigError as exc:
-        print(f"configurazione non valida: {exc}", file=sys.stderr)
+        print(f"invalid configuration: {exc}", file=sys.stderr)
         return 2
     settings.watch_dir.mkdir(parents=True, exist_ok=True)
     settings.library_dir.mkdir(parents=True, exist_ok=True)
@@ -273,7 +273,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "once":
         scan_once(settings, pipeline, index)
         return 0
-    log.info("osservo %s", settings.watch_dir)
+    log.info("watching %s", settings.watch_dir)
     try:
         while True:
             scan_once(settings, pipeline, index)

@@ -64,7 +64,7 @@ def test_prepare_falls_back_to_unfiltered_audio(tmp_path):
     assert prepared.path == tmp_path / "work" / "prepared.wav"
     assert prepared.path.exists()
     assert not prepared.highpass_applied
-    assert "non applicato" in prepared.note
+    assert "not applied" in prepared.note
     assert len(commands) == 2
 
 

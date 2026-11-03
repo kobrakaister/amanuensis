@@ -42,10 +42,10 @@ class OllamaClient:
                 return json.loads(response.read().decode("utf-8"))
         except urllib.error.HTTPError as exc:
             if exc.code == 404 or exc.code >= 500:
-                raise TransientError(f"Ollama ha risposto {exc.code} per il modello {self.model}") from exc
+                raise TransientError(f"Ollama returned {exc.code} for model {self.model}") from exc
             raise
         except (urllib.error.URLError, TimeoutError, ConnectionError) as exc:
-            raise TransientError(f"Ollama non raggiungibile: {exc}") from exc
+            raise TransientError(f"Ollama is unreachable: {exc}") from exc
 
     def complete(self, system: str, prompt: str) -> str:
         data = self._post(

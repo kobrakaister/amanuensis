@@ -60,7 +60,7 @@ def write_tone(path):
 def test_ffmpeg_decodes_container_back_to_wav(tmp_path, suffix, encode_args):
     ffmpeg = shutil.which("ffmpeg")
     if ffmpeg is None:
-        pytest.fail("ffmpeg deve essere nel PATH")
+        pytest.fail("ffmpeg must be on PATH")
     source = tmp_path / "source.wav"
     write_tone(source)
     encoded = tmp_path / f"sample{suffix}"

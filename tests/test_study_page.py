@@ -113,8 +113,8 @@ def test_the_page_keeps_a_refused_pair_and_stores_an_accepted_one(tmp_path):
     assert new_results.as_posix() in stored
     assert "highpass_hz = 90" in stored
     html = render_page(new_results, ollama_up=True, watch=new_audio)
-    assert "Scegli cartella audio" in html and "Scegli cartella risultati" in html
-    assert "Cartella audio" in html and "Cartella risultati" in html
+    assert "Choose audio folder" in html and "Choose results folder" in html
+    assert "Audio folder" in html and "Results folder" in html
     assert new_audio.as_posix() in html and new_results.as_posix() in html
     picked = tmp_path / "scelta"
     picked.mkdir()
@@ -129,9 +129,9 @@ def test_the_page_keeps_a_refused_pair_and_stores_an_accepted_one(tmp_path):
     assert apply_picked("library", picked) == ""
     assert StudyHandler.library == picked
     shown = render_page(picked, ollama_up=True, watch=new_audio)
-    assert "Risultati in uso" in shown
+    assert "Results in use" in shown
     assert picked.as_posix() in shown
-    assert "Riprendi" not in shown
+    assert "Resume" not in shown
 
 
 def test_paused_queue_lists_each_audio_file(tmp_path):
@@ -144,12 +144,12 @@ def test_paused_queue_lists_each_audio_file(tmp_path):
     hold.write_text("{}\n", encoding="utf-8")
     paused = render_page(results, ollama_up=True, watch=audio, hold=hold)
     assert "lezione.m4a" in paused
-    assert "in pausa" in paused
-    assert "Elaborazione ferma" in paused
-    assert "Riprendi" in paused
+    assert "on hold" in paused
+    assert "Processing is stopped" in paused
+    assert "Resume" in paused
     queued = render_page(results, ollama_up=True, watch=audio)
-    assert "in coda" in queued
-    assert "Riprendi" not in queued
+    assert "queued" in queued
+    assert "Resume" not in queued
 
 
 def test_folder_or_single_file(tmp_path):
@@ -185,11 +185,11 @@ def test_page_lists_only_the_active_folder_and_existing_products(tmp_path):
     assert "vecchia.m4a" not in html
     assert 'href="/files/' in html and "report.md" in html and "transcript.md" in html
     assert "notes.md" not in html
-    assert "Ollama: risponde" in html
+    assert "Ollama: responding" in html
     assert 'name="watch"' in html and 'name="library"' in html
     assert "/list" in html
     quiet = render_page(active, ollama_up=False)
-    assert "Ollama: non risponde" in quiet
+    assert "Ollama: not responding" in quiet
     later = render_page(active, ollama_up=True)
     assert "transcribe" in later
     state = next((active).iterdir()) / "state.json"

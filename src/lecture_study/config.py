@@ -60,9 +60,9 @@ def check_local_dir(path: Path, *, roots: list[Path], drive_type: Callable[[Path
     resolved = path.resolve()
     for root in roots:
         if resolved == root or root in resolved.parents:
-            raise ConfigError(f"{path} è dentro OneDrive ({root})")
+            raise ConfigError(f"{path} is inside OneDrive ({root})")
     if drive_type(resolved) == DRIVE_REMOTE:
-        raise ConfigError(f"{path} è su un disco di rete")
+        raise ConfigError(f"{path} is on a network drive")
 
 
 def validate(
@@ -77,10 +77,10 @@ def validate(
     watch = settings.watch_dir.resolve()
     library = settings.library_dir.resolve()
     if library == watch or watch in library.parents:
-        raise ConfigError("l'archivio non può stare dentro la cartella osservata")
+        raise ConfigError("the library cannot be inside the watch folder")
     host = urlparse(settings.ollama_url).hostname
     if host not in LOOPBACK_HOSTS:
-        raise ConfigError(f"ollama_url deve puntare a questo PC, non a {host}")
+        raise ConfigError(f"ollama_url must point at this PC, not at {host}")
     numbers = (
         settings.highpass_hz,
         settings.highpass_ratio_threshold,
@@ -89,22 +89,22 @@ def validate(
         settings.ollama_timeout_seconds,
     )
     if any(value <= 0 for value in numbers) or settings.stable_seconds < 0 or any(d < 0 for d in settings.retry_delays):
-        raise ConfigError("valori numerici non validi")
+        raise ConfigError("numeric values are invalid")
 
 
 def _convert(key: str, value: object, default: object) -> object:
     if isinstance(default, Path):
         if not isinstance(value, str):
-            raise ConfigError(f"{key} deve essere un percorso")
+            raise ConfigError(f"{key} must be a path")
         return Path(value)
     if isinstance(default, tuple):
         if not isinstance(value, list) or not all(type(item) is int for item in value):
-            raise ConfigError(f"{key} deve essere una lista di interi")
+            raise ConfigError(f"{key} must be a list of integers")
         return tuple(value)
     if isinstance(default, float) and type(value) is int:
         return float(value)
     if type(value) is not type(default):
-        raise ConfigError(f"{key} deve essere di tipo {type(default).__name__}")
+        raise ConfigError(f"{key} must be of type {type(default).__name__}")
     return value
 
 
@@ -115,7 +115,7 @@ def load_settings(path: Path = DEFAULT_CONFIG) -> Settings:
         known = {field.name for field in fields(Settings)}
         for key, value in tomllib.loads(path.read_text(encoding="utf-8")).items():
             if key not in known:
-                raise ConfigError(f"impostazione sconosciuta: {key}")
+                raise ConfigError(f"unknown setting: {key}")
             values[key] = _convert(key, value, getattr(defaults, key))
     settings = Settings(**values)
     validate(settings)

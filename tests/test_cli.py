@@ -44,5 +44,5 @@ def test_main_rejects_ollama_outside_this_pc(tmp_path, capsys):
         encoding="utf-8",
     )
     assert main(["--config", str(config), "once"]) == 2
-    assert "questo PC" in capsys.readouterr().err
+    assert "this PC" in capsys.readouterr().err
     assert not (tmp_path / "out").exists()

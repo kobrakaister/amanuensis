@@ -7,8 +7,8 @@ def test_report_lists_measures_decisions_and_events():
         completed=["accept", "analyze", "prepare", "transcribe"],
         status=Status.WAITING,
         stage="notes",
-        message="Ollama non raggiungibile",
-        events=["notes: Ollama non raggiungibile; ripetizione 1 tra 15 s"],
+        message="Ollama is unreachable",
+        events=["notes: Ollama is unreachable; retry 1 in 15 s"],
     )
     source = {
         "path": "C:/lezioni/strategia.m4a",
@@ -21,15 +21,15 @@ def test_report_lists_measures_decisions_and_events():
     }
     report = render_report(state, source)
     for expected in (
-        "- Stato: waiting",
-        "- Fase: notes",
-        "- Durata: 01:30:00",
-        "- Rapporto: 6.250 (soglia 1.0)",
-        "- Decisione: applicare il passa-alto a 80 Hz",
-        "- Applicato: sì",
-        "- Lingua: it (probabilità 0.93)",
-        "- Dispositivo: cuda",
-        "- notes: Ollama non raggiungibile; ripetizione 1 tra 15 s",
+        "- Status: waiting",
+        "- Stage: notes",
+        "- Duration: 01:30:00",
+        "- Ratio: 6.250 (threshold 1.0)",
+        "- Decision: apply high-pass at 80 Hz",
+        "- Applied: yes",
+        "- Language: it (probability 0.93)",
+        "- Device: cuda",
+        "- notes: Ollama is unreachable; retry 1 in 15 s",
     ):
         assert expected in report
 
@@ -37,12 +37,12 @@ def test_report_lists_measures_decisions_and_events():
 def test_low_ratio_explains_what_the_filter_does_not_do():
     source = {"analysis": {"low": 0.01, "voice": 1.0, "ratio": 0.01, "threshold": 1.0, "highpass_hz": 80, "apply": False}}
     report = render_report(JobState(), source)
-    assert "- Decisione: nessun passa-alto" in report
-    assert "non riduce il rumore a banda larga" in report
+    assert "- Decision: no high-pass" in report
+    assert "does not reduce broadband noise" in report
 
 
 def test_report_for_new_job():
-    report = render_report(JobState(status=Status.PAUSED, stage="accept", message="registrazione non trovata"), {})
-    assert "- Non ancora analizzato" in report
-    assert "- Non ancora trascritto" in report
-    assert "- Nessuno" in report
+    report = render_report(JobState(status=Status.PAUSED, stage="accept", message="recording not found"), {})
+    assert "- Not analyzed yet" in report
+    assert "- Not transcribed yet" in report
+    assert "- None" in report
