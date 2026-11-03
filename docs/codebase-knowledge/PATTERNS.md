@@ -23,7 +23,7 @@
 
 ## Adding a typical feature
 
-The design in `docs/superpowers/` decides the behavior. For a new stage, the existing shape is:
+For a new stage, the existing shape is:
 
 1. Add a `jobs.Stage` value and, if it has a final file, an entry in `STAGE_FILES`.
 2. Add a handler on `Pipeline` and register it in `_handlers`.

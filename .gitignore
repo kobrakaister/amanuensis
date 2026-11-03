@@ -21,3 +21,10 @@ build/
 eval/out/
 # Materiale MIT OCW: licenza CC BY-NC-SA, non entra nel repository.
 data/
+.cursor/
+openspec/
+docs/superpowers/
+docs/workstreams.md
+docs/workstreams-history.md
+AGENTS.md
+kit.lock

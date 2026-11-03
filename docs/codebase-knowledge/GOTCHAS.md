@@ -28,6 +28,5 @@
 
 ## Files to leave alone without context
 
-- `docs/superpowers/specs/2026-10-27-lecture-study-pipeline-design.md` and `docs/superpowers/plans/2026-10-27-lecture-study-pipeline.md` are the product decisions.
 - `scripts/register-autostart.ps1` registers a logon task. It is already registered for this user.
 - Do not read or commit `.ollama` keys. None live in this repository; the models directory is under the user profile.

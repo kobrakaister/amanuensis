@@ -38,9 +38,8 @@ cli.main
 
 - `src/lecture_study/`: the package.
 - `tests/`: pytest suite.
-- `scripts/`: `register-autostart.ps1` for the Windows logon task.
-- `docs/superpowers/`: the design and the implementation plan. They are the product decisions.
-- `docs/codebase-knowledge/`: this folder.
+- `scripts/`: `studio.cmd`, `studio.sh`, and `register-autostart.ps1`.
+- `docs/codebase-knowledge/`: how the program is laid out and how to start it.
 - `eval/`: a separate ASR word-error harness. It is not imported by `lecture_study`.
 
 ## Key dependencies and why
